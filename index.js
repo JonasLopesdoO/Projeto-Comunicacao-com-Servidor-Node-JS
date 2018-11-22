@@ -1,5 +1,4 @@
-//nome , telefone, email, genero(dropdown list)
-//botos como link para q o href faça o submit
+
 //pasta com as funções e o export
 //pasta só com as rotas
 
@@ -8,159 +7,163 @@ const request = require('request')
 let bodyParser = require('body-parser')
 var app = express();
 
+//permitir o render para páginas html
+//app.use(express.static(__dirname + '/app'));
+app.use(express.static('public'));
+
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-var minhaFuncao = require("./funcoes");
+//enviar dados com ejs para o html
+app.engine('html', require('ejs').renderFile);
+//aceitando javascript na página html
+app.engine('javascript', require('ejs').renderFile);
 
-app.get('/', function (req, res) {
-    
-   res.render("home", {
-   })
+
+
+
+
+//método para listar contatos
+app.get('/listar', function (req, res) {
+    request('https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts', function (error, response, body) {
+
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the HTML for the Google homepage.
+
+        res.render("list_page.html", {
+            contato: JSON.parse(body)
+        })
+    });
 });
 
-app.get('/rota1', function (req, res) {
-            request('https://reqres.in/api/users/2', function (error, response, body) {
 
-            if(error == null){
-                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                console.log('body:', body); // Print the HTML for the Google homepage.
-                res.send(body);
-            }else{
-                console.log('error:', error); // Print the error if one occurred
-                res.send(error)
-            }
+//funções de cadastrar
+app.get('/cadastrar', function (req, res) {
+    res.render("register_page.html", {
+    })
+});
+
+app.post('/cadastrarContato', function (req, res) {
+    var nome = req.body.name;
+    var email = req.body.email;
+    var genero = req.body.gender;
+    var telefone = req.body.phone
+
+    var postData = {
+        "name": nome,
+        "email": email,
+        "gender": genero,
+        "telefone": telefone
+    }
+
+    request.post({
+        url: "https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts",
+        method: "POST",
+        json: postData,
+    },
+        function (error, response, body) {
+            console.log(body);
+            console.log(res.statusCode);
+            res.redirect("listar")
         });
 });
 
-app.get('/rota2', function (req, res) {
-    request('https://reqres.in/api/users/23', function (error, response, body) {
 
-        if(response.statusCode == 404){
-            console.log('error:', error); // Print the error if one occurred
-            res.send(error)
-        }else{
-           
-        }
+
+
+//métodos para buscar contato
+app.get('/buscar', function (req, res) {
+    res.render("search_page.html", {
+    })
+});
+
+app.get('/buscarContato/', function (req, res) {
+    var idBusca = req.query.idBusca
+    console.log("ID: " + idBusca)
+
+    request.get('https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts/' + idBusca, function (error, response, body) {
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the HTML for the Google homepage.
+
+        res.render("show_contact.html", {
+            contatoBuscado: JSON.parse(body)
+        })
     });
 });
 
-app.get('/rota3', function (req, res) {
-    request('https://reqres.in/api/api/unknown', function (error, response, body) {
-
-    if(error == null){
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.send(body);
-    }else{
-        console.log('error:', error); // Print the error if one occurred
-        res.send(error)
-    }
-});
-});
 
 
-app.post('/rota4', function (req, res) {
-    var postData={
-        "name": "Jonas",
-        "job": "Student"
-    }
-    
-    request.post({
-        uri:"https://reqres.in/api/users",
-        headers:{'content-type': 'application/x-www-form-urlencoded'},
-        body:require('querystring').stringify(postData)
+
+
+//método para deletar contato
+app.post('/deletarContato', function (req, res) {
+    var idDeletar = req.body.idDeletar
+
+    console.log("ID Aqui: ", idDeletar)
+
+    request.delete({
+        url: "https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts/" + idDeletar,
+        method: "DELETE",
     },
-    function(error,response,body){
-        console.log(body);
-        console.log(res.statusCode);
-        res.send(body)
+        function (error, response, body) {
+            console.log(body);
+            console.log(res.statusCode);
+            res.redirect("/listar")
+        });
+});
+
+
+
+
+
+
+//Métodos para atualização de contato
+app.post('/atualizarContato', function (req, res) {
+    var idAtualizar = req.body.idAtualizar
+
+    console.log("ID Aqui: ", idAtualizar)
+
+    request.get('https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts/' + idAtualizar, function (error, response, body) {
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the HTML for the Google homepage.
+
+        res.render("update_page.html", {
+            contatoAtualizar: JSON.parse(body)
+        })
     });
 });
 
-app.get('/rota5', function (req, res) {
-    request('https://reqres.in/api/users/2', function (error, response, body) {
+app.post('/atualizarContatoFinal', function (req, res) {
+    //pega os dados do formulário de atualização
+    var id = req.body.idContatoAtualizar;
+    var nome = req.body.name;
+    var email = req.body.email;
+    var genero = req.body.gender;
+    var telefone = req.body.phone
 
-    if(error == null){
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.send(body);
-    }else{
-        console.log('error:', error); // Print the error if one occurred
-        res.send(error)
-    }
-});
-});
-
-app.get('/rota6', function (req, res) {
-    request('https://reqres.in/api/register', function (error, response, body) {
-
-    if(error == null){
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.send(body);
-    }else{
-        console.log('error:', error); // Print the error if one occurred
-        res.send(error)
-    }
-});
-});
-
-
-app.get('/rota7', function (req, res) {
-    request('https://reqres.in/api/users?delay=3', function (error, response, body) {
-
-    if(error == null){
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.send(body);
-    }else{
-        console.log('error:', error); // Print the error if one occurred
-        res.send(error)
-    }
-});
-});
-
-app.get('/rota8', function (req, res) {
-    request('https://reqres.in/api/unknown/2', function (error, response, body) {
-
-    if(error == null){
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.send(body);
-    }else{
-        console.log('error:', error); // Print the error if one occurred
-        res.send(error)
-    }
-});
-});
-
-
-app.post('/rotaFinal', function (req, res) {
-   
-   var nome = req.body.nome;
-   var telefone = req.body.telefone
-
-    var postData={
-        "nome": nome,
+    var postData = {
+        "name": nome,
+        "email": email,
+        "gender": genero,
         "telefone": telefone
     }
-    
-    request.post({
-        uri:"https://reqres.in/api/users",
-        headers:{'content-type': 'application/x-www-form-urlencoded'},
-        body:require('querystring').stringify(postData)
+
+    //chama o put para atualizar
+    request.put({
+        url: "https://f5zg6v0z92.execute-api.us-east-1.amazonaws.com/dev/contacts/" + id,
+        method: "PUT",
+        json: postData,
     },
-    function(error,response,body){
-        console.log(body);
-        console.log(res.statusCode);
-        res.send(body)
-    });
+        function (error, response, body) {
+            console.log(body);
+            console.log(res.statusCode);
+            res.redirect("listar")
+        });
 });
 
-app.listen(8000, function () {
-  console.log('Está rodando na porta 8000!');
+app.listen(3060, function () {
+    console.log('Está rodando na porta 3060!');
 });
 
 

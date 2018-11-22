@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Atividade OSF</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <header>
+        <nav class="custom-nav navbar navbar-expand-lg navbar-dark bg-dark">
+
+            <a href="" class="navbar-brand"> Menu Contatos </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropDown"
+                aria-controls="navbarNavDropDown" aria-expanded="false" aria-label="Toggle Navigation">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropDown">
+
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a href="/listar" class="nav-link">Listar</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/cadastrar" class="nav-link">Cadastrar</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/buscar" class="nav-link">Buscar</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+    </header>
+
+    <section class="jumbotron text-center">
+        <main role="main">
+        <div class="container">
+
+            <img class="img-fluid" width="700px" height="300px" src="img/osf.png">
+            <hr>
+
+            <p class="lead text-muted"><strong> APAIXONADOS. DETERMINADOS.
+                    Estes são apenas alguns dos adjetivos utilizados pelos nossos clientes ao descrever a OSF Global
+                    Services.
+                    E nós concordamos!</strong></p>
+
+            <p class="lead text-muted"> <em>EA OSF Global Services alcança o sucesso estabelecendo valores
+                    significativos,
+                    inabaláveis, que se aplicam a todos os aspectos do nosso negócio.
+                    Nós nos concentramos no respeito, flexibilidade e compromisso com nossos clientes. </em></p>
+
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            <div class="row col-lg-12">
+
+                <h3>Contatos cadastrados</h3>
+
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th>Gênero</th>
+
+                            <th>Atualizar</th>
+                            <th>Excluir</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% contato.forEach(function(contato){%>
+
+                        <tr>
+                            <td><%= contato._id %></td>
+                            <td><%= contato.name %></td>
+                            <td><%= contato.phone %></td>
+                            <td><%= contato.email %></td>
+                            <td><%= contato.gender %></td>
+
+                            <form action="/atualizarContato/" method="POST" novalidate>
+                                <input type="hidden" name="idAtualizar" id="idAtualizar" value="<%= contato._id%>" />
+
+                                <td><button type="submit" class="btn btn-primary">Atualizar</a></td>
+                            </form>
+                            
+                            <form action="/deletarContato/" method="POST">
+                                <input type="hidden" name="idDeletar" id="idDeletar" value="<%= contato._id%>" />
+
+                                <td><button type="submit"  class="btn btn-danger">X</a></td>
+                            </form>
+   
+                        </tr>
+
+                        <% }); %>
+                    </tbody>
+                </table>
+                <!--Tabela de contatos-->
+            </div>
+        </div>
+    </div>
+
+    </main>
+    </section>
+
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+
+</html>
