@@ -45,22 +45,23 @@
 
     <section class="jumbotron text-center">
         <main role="main">
-        <div class="container">
+            <div class="container">
 
-            <img class="img-fluid" width="700px" height="300px" src="img/osf.png">
-            <hr>
-            
-            <p class="lead text-muted"><strong> APAIXONADOS. DETERMINADOS.
-                    Estes são apenas alguns dos adjetivos utilizados pelos nossos clientes ao descrever a OSF Global
-                    Services.
-                    E nós concordamos!</strong></p>
+                <img class="img-fluid" width="700px" height="300px" src="img/osf.png">
+                <hr>
 
-            <p class="lead text-muted"> <em>EA OSF Global Services alcança o sucesso estabelecendo valores
-                    significativos,
-                    inabaláveis, que se aplicam a todos os aspectos do nosso negócio.
-                    Nós nos concentramos no respeito, flexibilidade e compromisso com nossos clientes. </em></p>
+                <p class="lead text-muted"><strong> APAIXONADOS. DETERMINADOS.
+                        Estes são apenas alguns dos adjetivos utilizados pelos nossos clientes ao descrever a OSF
+                        Global
+                        Services.
+                        E nós concordamos!</strong></p>
 
-        </div>
+                <p class="lead text-muted"> <em>EA OSF Global Services alcança o sucesso estabelecendo valores
+                        significativos,
+                        inabaláveis, que se aplicam a todos os aspectos do nosso negócio.
+                        Nós nos concentramos no respeito, flexibilidade e compromisso com nossos clientes. </em></p>
+
+            </div>
     </section>
 
     <div class="album py-5 bg-light">
@@ -87,19 +88,38 @@
                     <tbody>
 
                         <tr>
-                            <td><%= contatoBuscado._id %></td>
-                            <td><%= contatoBuscado.name %></td>
-                            <td><%= contatoBuscado.email %></td>
-                            <td><%= contatoBuscado.gender %></td>
-                            <td><%= contatoBuscado.phone %></td>
+                            <td>
+                                <%= contatoBuscado._id %>
+                            </td>
+                            <td>
+                                <%= contatoBuscado.name %>
+                            </td>
+                            <td>
+                                <%= contatoBuscado.email %>
+                            </td>
+                            <td>
+                                <%= contatoBuscado.gender %>
+                            </td>
+                            <td>
+                                <%= contatoBuscado.phone %>
+                            </td>
 
-                            <td><a class="btn btn-primary">Atualizar</a></td>
-                            <td><a class="btn btn-sm  btn-danger">X</a></td>
+                            <form action="/atualizarContato/" method="POST" novalidate>
+                                <input type="hidden" name="idAtualizar" id="idAtualizar" value="<%= contatoBuscado._id%>" />
+
+                                <td><button type="submit" class="btn btn-primary">Atualizar</a></td>
+                            </form>
+
+                            <form action="/deletarContato/" method="POST">
+                                <input type="hidden" name="idDeletar" id="idDeletar" value="<%= contatoBuscado._id%>" />
+
+                                <td><button type="submit" class="btn btn-danger">X</a></td>
+                            </form>
                         </tr>
 
-                        
+
                     </tbody>
-                </table> 
+                </table>
                 <!--Tabela de contatos-->
             </div>
         </div>
