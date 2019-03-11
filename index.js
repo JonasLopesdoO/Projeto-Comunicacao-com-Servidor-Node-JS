@@ -22,9 +22,6 @@ app.engine('html', require('ejs').renderFile);
 app.engine('javascript', require('ejs').renderFile);
 
 
-
-
-
 //método para listar contatos
 app.get('/listar', meuController.listar);
 
@@ -55,5 +52,3 @@ app.get('/deletarTodosContatos', meuController.deletarTodos);
 app.listen(port, function () {
     console.log(`Executando na porta ${port}`);
 });
-
-
